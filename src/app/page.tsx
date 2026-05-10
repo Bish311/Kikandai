@@ -10,7 +10,7 @@ export default function Home() {
   const [documents, setDocuments] = useState<{name: string, status: string, id: string | null}[]>([]);
   
   const [visualChatHistory, setVisualChatHistory] = useState<Array<{ role: "user" | "assistant"; content: string }>>([
-    { role: "assistant", content: "Welcome to Kikandai, Bishwayan. Upload a document to begin." }
+    { role: "assistant", content: "Welcome to Kikandai, Upload a document to begin." }
   ]);
   const [activeContextHistory, setActiveContextHistory] = useState<Array<{ role: "user" | "assistant"; content: string }>>([]);
 
