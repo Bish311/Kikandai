@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import "pdf-parse"; // Explicit import to force Vercel to bundle this dynamic dependency
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { CSVLoader } from "@langchain/community/document_loaders/fs/csv";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";

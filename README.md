@@ -1,22 +1,51 @@
-# Kikandai
+<div align="center">
+  <div style="background-color: #EF4444; width: 64px; height: 64px; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+    <h1 style="color: white; margin: 0; font-size: 32px;">K</h1>
+  </div>
+  <h1>Kikandai (機関台)</h1>
+  <p><strong>A Next-Generation RAG-Powered Document Assistant</strong></p>
 
-Kikandai is a high-performance RAG (Retrieval-Augmented Generation) document assistant built to provide precise, context-aware answers from uploaded documents.
+  <p>
+    <a href="https://kikandai.vercel.app/"><b>Live Deployment</b></a> •
+    <a href="#tech-stack">Tech Stack</a> •
+    <a href="#key-features">Features</a> •
+    <a href="#getting-started">Getting Started</a>
+  </p>
 
-## Tech Stack
-- **Framework**: Next.js 15+ (App Router)
-- **Database**: MongoDB Atlas with Vector Search
-- **Orchestration**: LangChain.js
-- **Embeddings**: Google Gemini (`gemini-embedding-001`)
-- **LLM**: Google Gemini 3 Flash (`gemini-3-flash-preview`)
-- **Styling**: Vanilla CSS + Tailwind
+  <p>
+    <img src="https://img.shields.io/badge/Next.js-16.2-black?style=for-the-badge&logo=next.js" alt="Next.js" />
+    <img src="https://img.shields.io/badge/MongoDB_Atlas-Vector_Search-47A248?style=for-the-badge&logo=mongodb" alt="MongoDB Atlas" />
+    <img src="https://img.shields.io/badge/Google_Gemini-3_Flash-4285F4?style=for-the-badge&logo=google" alt="Google Gemini" />
+    <img src="https://img.shields.io/badge/LangChain.js-RAG-1C3C3C?style=for-the-badge&logo=langchain" alt="LangChain" />
+  </p>
+</div>
 
-## Key Features
-- **Multi-Format Ingestion**: Full support for PDF, CSV, and TXT files.
-- **Dual-State Memory**: Independent visual chat history and active LLM context for smarter conversations.
-- **Live Streaming**: Real-time token streaming for instantaneous response feedback.
-- **Vector Search**: Deep semantic retrieval using MongoDB Atlas Vector Index.
+---
 
-## Getting Started
+## ⚡ Overview
+
+Kikandai is an intelligent, high-performance **Retrieval-Augmented Generation (RAG)** application. It allows users to upload documents and instantly chat with them. By leveraging the power of MongoDB Atlas Vector Search and Google's latest Gemini 3 Flash model, Kikandai guarantees that every response is strictly grounded in the provided document context, eliminating LLM hallucinations.
+
+## ✨ Key Features
+
+- 📄 **Multi-Format Ingestion**: Drag-and-drop support for **PDF, CSV, and TXT** files.
+- 🧠 **Dual-State Memory**: A sophisticated state management system that separates the visual UI chat history from the active LLM context payload, enabling advanced cross-document memory tracking.
+- ⚡ **Live Streaming**: Real-time token streaming built on standard Web Streams for instantaneous, typewriter-like response feedback.
+- 🔍 **Deep Vector Search**: Semantic retrieval using `gemini-embedding-001` stored in a MongoDB Atlas vector index.
+- 🎨 **Premium UI/UX**: A dark-mode first, glassmorphism-inspired aesthetic built with Tailwind CSS and Lucide React icons.
+
+## 🏗️ Architecture
+
+1. **Ingestion (`/api/ingest`)**: Files are parsed via LangChain loaders, split into overlapping chunks (1000 characters), embedded using Gemini, and stored in MongoDB Atlas with a unique `documentId`.
+2. **Retrieval (`/api/chat`)**: User queries trigger a vector similarity search across all active `documentIds`.
+3. **Generation**: Retrieved chunks are injected into a strict system prompt. The LLM streams the grounded answer back to the UI.
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js 18+
+- A [MongoDB Atlas](https://www.mongodb.com/products/platform/atlas-vector-search) cluster with a configured Vector Search index.
+- A [Google Gemini API Key](https://aistudio.google.com/).
 
 ### 1. Clone the repository
 ```bash
@@ -43,5 +72,12 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) to start chatting with your documents.
 
-## Author
-**Bishwayan Chatterjee**
+## ☁️ Deployment
+
+Kikandai is optimized for Vercel Serverless deployment. A `vercel.json` file is included to automatically increase the serverless function `maxDuration` to 60 seconds, ensuring large PDF documents have ample time to parse and embed during ingestion.
+
+---
+
+<div align="center">
+  <p>Built with ❤️ by <strong>Bishwayan Chatterjee</strong></p>
+</div>
