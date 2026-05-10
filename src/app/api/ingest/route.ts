@@ -33,7 +33,6 @@ export async function POST(incomingRequest: NextRequest) {
 
     if (fileExtension === "pdf") {
       const parser = new PDFParse({ data: new Uint8Array(fileBufferData), verbosity: VerbosityLevel.ERRORS });
-      await parser.load();
       const pdfResult = await parser.getText();
       extractedDocuments = [{ pageContent: pdfResult.text, metadata: { source: fileName } }];
     } else if (fileExtension === "csv") {
