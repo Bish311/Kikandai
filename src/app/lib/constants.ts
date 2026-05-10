@@ -1,0 +1,9 @@
+export const CHUNK_SIZE = 1000;
+export const CHUNK_OVERLAP = 200;
+export const VECTOR_DIMENSIONS = 3072;
+export const RETRIEVAL_K = 6;
+export const COLLECTION_NAME = "documents";
+export const INDEX_NAME = "vector_index";
+export const EMBEDDING_MODEL = "gemini-embedding-001";
+export const LLM_MODEL = "gemini-3-flash-preview";
+export const MAX_FILE_SIZE = 3 * 1024 * 1024; // 3MB

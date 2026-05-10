@@ -9,9 +9,20 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@langchain/community": "^1.1.28",
+    "@langchain/core": "^1.1.45",
+    "@langchain/google-genai": "^2.1.30",
+    "@langchain/mongodb": "^1.2.0",
+    "@langchain/textsplitters": "^1.0.1",
+    "d3-dsv": "^3.0.1",
+    "langchain": "^1.4.0",
+    "lucide-react": "^1.14.0",
+    "mongodb": "^7.2.0",
     "next": "16.2.6",
+    "pdf-parse": "^2.4.5",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "react-markdown": "^10.1.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
