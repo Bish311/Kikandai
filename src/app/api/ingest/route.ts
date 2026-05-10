@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PDFParse, VerbosityLevel } from "pdf-parse";
+import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { CSVLoader } from "@langchain/community/document_loaders/fs/csv";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { randomUUID } from "crypto";
@@ -32,9 +32,9 @@ export async function POST(incomingRequest: NextRequest) {
     let extractedDocuments;
 
     if (fileExtension === "pdf") {
-      const parser = new PDFParse({ data: new Uint8Array(fileBufferData), verbosity: VerbosityLevel.ERRORS });
-      const pdfResult = await parser.getText();
-      extractedDocuments = [{ pageContent: pdfResult.text, metadata: { source: fileName } }];
+      const temporaryFileBlob = new Blob([fileBufferData], { type: "application/pdf" });
+      const pdfDocumentLoader = new PDFLoader(temporaryFileBlob);
+      extractedDocuments = await pdfDocumentLoader.load();
     } else if (fileExtension === "csv") {
       const temporaryFileBlob = new Blob([fileBufferData], { type: "text/csv" });
       const csvDocumentLoader = new CSVLoader(temporaryFileBlob);
