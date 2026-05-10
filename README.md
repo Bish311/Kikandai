@@ -74,7 +74,7 @@ Open [http://localhost:3000](http://localhost:3000) to start chatting with your 
 
 ## ☁️ Deployment
 
-Kikandai is optimized for Vercel Serverless deployment. A `vercel.json` file is included to automatically increase the serverless function `maxDuration` to 60 seconds, ensuring large PDF documents have ample time to parse and embed during ingestion.
+Kikandai is optimized for Vercel Serverless deployment. Each API route exports `maxDuration = 60` to ensure large PDF documents have ample time to parse and embed during ingestion. The `next.config.ts` marks `pdf-parse` as a server external package for proper bundling.
 
 ---
 

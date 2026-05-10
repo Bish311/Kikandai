@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import "pdf-parse"; // Explicit import to force Vercel to bundle this dynamic dependency
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { CSVLoader } from "@langchain/community/document_loaders/fs/csv";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { randomUUID } from "crypto";
 import { getVectorStore } from "@/app/lib/vectorStore";
+
+export const maxDuration = 60;
 
 const MAXIMUM_CHUNK_SIZE = 1000;
 const CHUNK_OVERLAP_SIZE = 200;
