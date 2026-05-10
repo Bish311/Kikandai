@@ -7,10 +7,10 @@ import { SystemMessage, HumanMessage, AIMessage } from "@langchain/core/messages
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { documentId, history } = body;
+    const { documentIds, history } = body;
 
-    if (!documentId) {
-      return NextResponse.json({ error: "Missing documentId" }, { status: 400 });
+    if (!documentIds || !Array.isArray(documentIds) || documentIds.length === 0) {
+      return NextResponse.json({ error: "Missing documentIds array" }, { status: 400 });
     }
 
     if (!history || !Array.isArray(history) || history.length === 0) {
@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
     const vectorStore = await getVectorStore();
     
     const retrievedChunks = await vectorStore.similaritySearch(question, RETRIEVAL_K, {
-      preFilter: { documentId: { $eq: documentId } },
+      preFilter: { documentId: { $in: documentIds } },
     });
 
     if (retrievedChunks.length === 0) {

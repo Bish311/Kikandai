@@ -79,8 +79,10 @@ export default function Home() {
 
   const handleAskQuestion = async (e: React.FormEvent) => {
     e.preventDefault();
-    const activeDocId = [...documents].reverse().find(d => d.status === "Ready")?.id;
-    if (!currentQuestion.trim() || !activeDocId || isThinking) return;
+    const readyDocs = documents.filter(d => d.status === "Ready");
+    const activeDocIds = readyDocs.map(d => d.id).filter(Boolean) as string[];
+    
+    if (!currentQuestion.trim() || activeDocIds.length === 0 || isThinking) return;
 
     const question = currentQuestion;
     setCurrentQuestion("");
@@ -104,8 +106,13 @@ export default function Home() {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ documentId: activeDocId, history: newActiveContext }),
+        body: JSON.stringify({ documentIds: activeDocIds, history: newActiveContext }),
       });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `Server error: ${response.status}`);
+      }
 
       if (!response.body) throw new Error("Empty response body");
 
@@ -146,7 +153,7 @@ export default function Home() {
         const updatedHistory = [...prev];
         updatedHistory[visualAssistantIndex] = {
           role: "assistant",
-          content: "I encountered an error while processing the document.",
+          content: `I encountered an error: ${error.message || "Unknown error"}`,
         };
         return updatedHistory;
       });
@@ -154,7 +161,7 @@ export default function Home() {
         const updatedHistory = [...prev];
         updatedHistory[contextAssistantIndex] = {
           role: "assistant",
-          content: "I encountered an error while processing the document.",
+          content: `I encountered an error: ${error.message || "Unknown error"}`,
         };
         return updatedHistory;
       });
@@ -163,7 +170,8 @@ export default function Home() {
     }
   };
 
-  const activeDocId = [...documents].reverse().find(d => d.status === "Ready")?.id;
+  const activeDocIds = documents.filter(d => d.status === "Ready").map(d => d.id).filter(Boolean);
+  const isChatReady = activeDocIds.length > 0;
 
   return (
     <div className="h-screen w-full flex flex-col relative font-sans overflow-hidden bg-zinc-50 dark:bg-zinc-950 transition-colors duration-300">
@@ -225,13 +233,13 @@ export default function Home() {
                 type="text"
                 value={currentQuestion}
                 onChange={(e) => setCurrentQuestion(e.target.value)}
-                disabled={!activeDocId || isThinking}
-                placeholder={activeDocId ? "Ask a question..." : "Upload a document first..."}
+                disabled={!isChatReady || isThinking}
+                placeholder={isChatReady ? "Ask a question..." : "Upload a document first..."}
                 className="flex-1 px-6 py-4 rounded-full border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-red-500/50 transition-all disabled:opacity-50 shadow-inner"
               />
               <button
                 type="submit"
-                disabled={!currentQuestion.trim() || !activeDocId || isThinking}
+                disabled={!currentQuestion.trim() || !isChatReady || isThinking}
                 className="absolute right-2 top-2 bottom-2 w-10 h-10 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center transition-all disabled:opacity-50 disabled:hover:bg-red-500 cursor-pointer shadow-md"
               >
                 <Send className="w-4 h-4 ml-0.5" />

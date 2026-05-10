@@ -26,7 +26,7 @@ export async function POST(incomingRequest: NextRequest) {
     }
 
     const fileBufferData = await uploadedFile.arrayBuffer();
-    const temporaryFileBlob = new Blob([fileBufferData], { type: uploadedFile.type });
+    const temporaryFileBlob = new Blob([fileBufferData], { type: fileExtension === "pdf" ? "application/pdf" : (fileExtension === "csv" ? "text/csv" : "text/plain") });
 
     let extractedDocuments;
 
@@ -68,7 +68,8 @@ export async function POST(incomingRequest: NextRequest) {
       documentId: generatedDocumentId, 
       chunkCount: chunkedDocuments.length 
     });
-  } catch (ingestionError) {
-    return NextResponse.json({ error: "Ingestion failed" }, { status: 500 });
+  } catch (ingestionError: any) {
+    console.error("Ingestion Error:", ingestionError);
+    return NextResponse.json({ error: `Ingestion failed: ${ingestionError.message || "Unknown error"}` }, { status: 500 });
   }
 }
