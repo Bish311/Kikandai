@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
+import pdfParse from "pdf-parse";
 import { CSVLoader } from "@langchain/community/document_loaders/fs/csv";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { randomUUID } from "crypto";
@@ -28,14 +28,14 @@ export async function POST(incomingRequest: NextRequest) {
     }
 
     const fileBufferData = await uploadedFile.arrayBuffer();
-    const temporaryFileBlob = new Blob([fileBufferData], { type: fileExtension === "pdf" ? "application/pdf" : (fileExtension === "csv" ? "text/csv" : "text/plain") });
 
     let extractedDocuments;
 
     if (fileExtension === "pdf") {
-      const pdfDocumentLoader = new PDFLoader(temporaryFileBlob);
-      extractedDocuments = await pdfDocumentLoader.load();
+      const pdfData = await pdfParse(Buffer.from(fileBufferData));
+      extractedDocuments = [{ pageContent: pdfData.text, metadata: { source: fileName } }];
     } else if (fileExtension === "csv") {
+      const temporaryFileBlob = new Blob([fileBufferData], { type: "text/csv" });
       const csvDocumentLoader = new CSVLoader(temporaryFileBlob);
       extractedDocuments = await csvDocumentLoader.load();
     } else {
