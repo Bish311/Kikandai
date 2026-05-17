@@ -6,6 +6,8 @@ import { SystemMessage, HumanMessage, AIMessage } from "@langchain/core/messages
 
 export const maxDuration = 60;
 
+const STREAM_CHUNK_DELAY_MS = 10;
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -26,11 +28,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid question in history" }, { status: 400 });
     }
 
+<<<<<<< Updated upstream
     const vectorStore = await getVectorStore();
     
     const retrievedChunks = await vectorStore.similaritySearch(question, RETRIEVAL_K, {
       preFilter: { documentId: { $in: documentIds } },
     });
+=======
+    const graph = compileGraph();
+>>>>>>> Stashed changes
 
     if (retrievedChunks.length === 0) {
       return new Response("I couldn't find anything related to that in the document. My analysis is strictly limited to the uploaded file, so I don't have information on that topic.", {
@@ -38,12 +44,16 @@ export async function POST(req: NextRequest) {
       });
     }
 
+<<<<<<< Updated upstream
     const context = retrievedChunks
       .map(
         (chunk) =>
           `[Page ${chunk.metadata?.loc?.pageNumber || "Unknown"}]\n${chunk.pageContent}`
       )
       .join("\n\n");
+=======
+    const finalState = await graph.invoke(initialState, { configurable: { thread_id: initialState.threadId } });
+>>>>>>> Stashed changes
 
     const systemPrompt = `You are Kikandai, an intelligent and highly capable AI assistant analyzing uploaded documents.
 
@@ -74,10 +84,18 @@ ${context}`;
 
     const readableStream = new ReadableStream({
       async start(controller) {
+<<<<<<< Updated upstream
         for await (const chunk of stream) {
           if (chunk.content) {
             controller.enqueue(new TextEncoder().encode(chunk.content.toString()));
           }
+=======
+        const encoder = new TextEncoder();
+        const chunks = answer.split(/(\s+)/);
+        for (const chunk of chunks) {
+          controller.enqueue(encoder.encode(chunk));
+          await new Promise(resolve => setTimeout(resolve, STREAM_CHUNK_DELAY_MS));
+>>>>>>> Stashed changes
         }
         controller.close();
       }
