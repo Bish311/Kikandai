@@ -18,8 +18,10 @@ export default function Home() {
   const [isThinking, setIsThinking] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [threadId, setThreadId] = useState("");
 
   useEffect(() => {
+    setThreadId(crypto.randomUUID());
     const savedTheme = localStorage.getItem('kikandai-theme');
     const shouldBeDark = savedTheme ? savedTheme === 'dark' : true;
     setIsDarkMode(shouldBeDark);
@@ -106,7 +108,7 @@ export default function Home() {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ documentIds: activeDocIds, history: newActiveContext }),
+        body: JSON.stringify({ documentIds: activeDocIds, history: newActiveContext, threadId }),
       });
 
       if (!response.ok) {
